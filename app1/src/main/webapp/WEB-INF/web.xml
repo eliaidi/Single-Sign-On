@@ -1,0 +1,29 @@
+<!DOCTYPE web-app PUBLIC
+ "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+ "http://java.sun.com/dtd/web-app_2_3.dtd" >
+
+<web-app>
+	<display-name>Archetype Created Web Application</display-name>
+
+    <!-- 
+	<filter>
+		<filter-name>SsoFilter</filter-name>
+		<filter-class>com.sumscope.sso.common.filter.SsoFilter</filter-class>
+		<init-param>
+			<param-name>NOT_CHECK_URL_LIST</param-name>
+			<param-value>
+				/,
+				/notCheckJwt,
+				/dubboTest,
+				/ssoClientTest
+			</param-value>
+		</init-param>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>SsoFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	 -->
+	
+</web-app>

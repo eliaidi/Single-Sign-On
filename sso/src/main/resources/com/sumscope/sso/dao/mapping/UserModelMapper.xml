@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nihao001.sso.dao.UserModelMapper">
+	<resultMap id="BaseResultMap" type="com.nihao001.sso.dao.model.UserModel">
+		<id column="id" jdbcType="BIGINT" property="id" />
+		<result column="username" jdbcType="VARCHAR" property="username" />
+		<result column="password" jdbcType="VARCHAR" property="password" />
+		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+		<result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
+		<result column="status" jdbcType="TINYINT" property="status" />
+	</resultMap>
+	
+	<sql id="Base_Column_List">
+		id, username, password, create_time, modify_time, status
+	</sql>
+	
+	<select id="selectByUsername" parameterType="java.lang.String"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from user
+		where username = #{username,jdbcType=VARCHAR} and status=0
+	</select>
+	
+</mapper>
