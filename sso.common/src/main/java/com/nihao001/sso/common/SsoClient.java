@@ -3,6 +3,7 @@ package com.nihao001.sso.common;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -63,25 +64,30 @@ public final class SsoClient {
         ssoClient = null;
     }
 
-    public final LoginOutput login(LoginInput loginInput) throws Exception{
+    public final LoginOutput login(LoginInput loginInput){
         if(loginInput == null || Utils.isStringBlank(loginInput.getUsername()) 
                 || Utils.isStringBlank(loginInput.getPassword()) 
                 || loginInput.getPlatform() == null
                 || loginInput.getExpireTime() <= 0){
             throw new IllegalArgumentException("username, password, platfrom can not be null.And expireTime must be more than 0.");
         }
-        final HttpPost request = new HttpPost(Config.getInstant().getSsoServer() + LOGIN);
-        // set json as http request body.
-        StringEntity postBody = new StringEntity(JSON.toJSONString(loginInput));
-        postBody.setContentEncoding("UTF-8");    
-        postBody.setContentType("application/json");
-        request.setEntity(postBody);
-        
-        Future<HttpResponse> future = httpclient.execute(request, null);
-        HttpResponse response = future.get();
-        if(response.getStatusLine().getStatusCode() == 200){
-            String text = EntityUtils.toString(response.getEntity(), Charset.forName("UTF-8"));
-            return JSON.parseObject(text, LoginOutput.class);
+        try{
+            final HttpPost request = new HttpPost(Config.getInstant().getSsoServer() + LOGIN);
+            // set json as http request body.
+            StringEntity postBody = new StringEntity(JSON.toJSONString(loginInput));
+            postBody.setContentEncoding("UTF-8");    
+            postBody.setContentType("application/json");
+            request.setEntity(postBody);
+            
+            Future<HttpResponse> future = httpclient.execute(request, null);
+            HttpResponse response = future.get();
+            if(response.getStatusLine().getStatusCode() == 200){
+                String text = EntityUtils.toString(response.getEntity(), Charset.forName("UTF-8"));
+                return JSON.parseObject(text, LoginOutput.class);
+            }
+        }
+        catch(Exception e){
+            logger.error("login error", e);
         }
         return null;
     }
@@ -90,13 +96,18 @@ public final class SsoClient {
         if(Utils.isStringBlank(token)){
             throw new IllegalArgumentException("the token is blank when check.");
         }
-        final HttpGet request = new HttpGet(Config.getInstant().getSsoServer() + CHECK);
-        request.addHeader("jwt", token);
-        Future<HttpResponse> future = httpclient.execute(request, null);
-        HttpResponse response = future.get();
-        if(response.getStatusLine().getStatusCode() == 200){
-            String text = EntityUtils.toString(response.getEntity(), Charset.forName("UTF-8"));
-            return JSON.parseObject(text, JwtCheckOutput.class);
+        try{
+            final HttpGet request = new HttpGet(Config.getInstant().getSsoServer() + CHECK);
+            request.addHeader("jwt", token);
+            Future<HttpResponse> future = httpclient.execute(request, null);
+            HttpResponse response = future.get();
+            if(response.getStatusLine().getStatusCode() == 200){
+                String text = EntityUtils.toString(response.getEntity(), Charset.forName("UTF-8"));
+                return JSON.parseObject(text, JwtCheckOutput.class);
+            }
+        }
+        catch(Exception e){
+            logger.error("check error", e);
         }
         return null;
     }
@@ -105,13 +116,18 @@ public final class SsoClient {
         if(Utils.isStringBlank(token)){
             throw new IllegalArgumentException("the token is blank when logout.");
         }
-        final HttpGet request = new HttpGet(Config.getInstant().getSsoServer() + LOGOUT);
-        request.addHeader("jwt", token);
-        Future<HttpResponse> future = httpclient.execute(request, null);
-        HttpResponse response = future.get();
-        if(response.getStatusLine().getStatusCode() == 200){
-            String text = EntityUtils.toString(response.getEntity(), Charset.forName("UTF-8"));
-            return JSON.parseObject(text, LogoutOutput.class);
+        try{
+            final HttpGet request = new HttpGet(Config.getInstant().getSsoServer() + LOGOUT);
+            request.addHeader("jwt", token);
+            Future<HttpResponse> future = httpclient.execute(request, null);
+            HttpResponse response = future.get();
+            if(response.getStatusLine().getStatusCode() == 200){
+                String text = EntityUtils.toString(response.getEntity(), Charset.forName("UTF-8"));
+                return JSON.parseObject(text, LogoutOutput.class);
+            }
+        }
+        catch(Exception e){
+            logger.error("logout error", e);
         }
         return null;
     }
@@ -128,8 +144,10 @@ public final class SsoClient {
             LoginOutput loginOutput = ssoClient.login(loginInput);
             System.out.println(loginOutput);
             
-            JwtCheckOutput checkOutput = ssoClient.check(loginOutput.getToken());
-            System.out.println(checkOutput);
+            for(int i = 0; i < 20; i++){
+                JwtCheckOutput checkOutput = ssoClient.check(loginOutput.getToken());
+                System.out.println(checkOutput);
+            }
             
             LogoutOutput logoutResult = ssoClient.logout(loginOutput.getToken());
             System.out.println(logoutResult);
