@@ -2,6 +2,7 @@ application:
     port: 8080
     jwt.key: 123456
     root.domain: test.com
+    # default redirect url after login sucessfully.
     default.redirect.url: http://app1.test.com:8091/
 
 database:
@@ -16,7 +17,7 @@ database:
         validation-query: "SELECT 1"
         test-on-borrow: true
 
-# 如果sso信息是保存在redis里,请正确配置redis
+# If you want to save sso info on redis, please configure redis correctly.
 spring:
     redis:
         # Redis数据库索引（默认为0）

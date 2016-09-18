@@ -6,6 +6,24 @@ Project sso.common is a basic project. Provide some utils, javabean, interface f
 
 Project app1 is an example project. That show you how to use sso.common in new project.
 
+How to start sso server
+
+1. git clone https://github.com/worldmaomao/Single-Sign-On.git
+
+2. cd sso.common
+
+3. mvn clean install
+
+4. cd sso
+
+5. import src/main/sql/init.sql into mysql
+
+6. configure src/main/resources/application-dev.yml. You must configure mysql database info correctly.
+
+7. mvn spring-boot:run
+
+
+
 
 
 

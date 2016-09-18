@@ -24,7 +24,7 @@ public class Config {
     private Config(){
         InputStream input = null;
         try{
-            input = Config.class.getClassLoader().getResourceAsStream("sso.properties");
+            input = Config.class.getResourceAsStream("/sso.properties");
             Properties properties = new Properties();
             properties.load(input);
             this.ssoServer      = properties.getProperty("sso.server");
