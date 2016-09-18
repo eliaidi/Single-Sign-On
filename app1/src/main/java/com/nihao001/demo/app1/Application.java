@@ -13,7 +13,7 @@ import org.springframework.context.annotation.ImportResource;
 @Configuration
 @EnableAutoConfiguration
 @ComponentScan
-@ImportResource({ "classpath:dubbo.xml" })
+//@ImportResource({ "classpath:dubbo.xml" })
 public class Application extends SpringBootServletInitializer implements EmbeddedServletContainerCustomizer {
 
     @Value("${application.port}")
